@@ -4,7 +4,7 @@ services:
   reservation:
     build: .
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - .:/app:rw
     environment:
@@ -12,16 +12,16 @@ services:
       JWT_PUBLIC_KEY: /app/config/jwt/public.pem
       JWT_PASSPHRASE: ${JWT_PASSPHRASE}
     command: sh start.sh
-  db:
-    image: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: reservations_api
-      POSTGRES_USER: iannis_api
-      POSTGRES_PASSWORD: iannis
-    volumes:
-      - postgres_data:/var/lib/postgresql/datapostgresql/data:rw
+#  db:
+#    image: postgres
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      POSTGRES_DB: reservations_api
+#      POSTGRES_USER: iannis_api
+#      POSTGRES_PASSWORD: iannis
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/datapostgresql/data:rw
   rabbitmq:
     image: rabbitmq:management
     ports:

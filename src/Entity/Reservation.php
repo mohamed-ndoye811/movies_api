@@ -36,6 +36,10 @@ class Reservation
     #[Groups(["reservation"])]
     private ?Uuid $uid = null;
 
+    #[ORM\Column(type: 'string', length: 36)]
+    #[Groups(["reservation"])]
+    private ?string $movieUid = null;
+
     #[ORM\Column(type: 'integer')]
     #[Assert\Range(
         min: 0,
@@ -175,6 +179,18 @@ class Reservation
     public function setExpiresAt(\DateTimeImmutable $expiresAt): static
     {
         $this->expiresAt = $expiresAt;
+
+        return $this;
+    }
+
+    public function getMovieUid(): ?string
+    {
+        return $this->movieUid;
+    }
+
+    public function setMovieUid(string $movieUid): static
+    {
+        $this->movieUid = $movieUid;
 
         return $this;
     }

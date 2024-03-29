@@ -26,45 +26,165 @@ use Symfony\Component\Validator\Exception\ValidationException;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Component\Uid\UuidV4;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ReservationController extends AbstractController
 {
     private $entityManager;
+    private $httpClient;
     private MessageBusInterface $bus;
 
-    public function __construct(EntityManagerInterface $entityManager, MessageBusInterface $bus)
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        HttpClientInterface $httpClient,
+        MessageBusInterface $bus
+    )
     {
         $this->entityManager = $entityManager;
+        $this->httpClient = $httpClient;
         $this->bus = $bus;
     }
 
-    // This route is for getting a list of all reservations
-    #[Route('movie/{movieUid}/reservations', name: 'reservation_listing', methods: ['GET'])]
+
+    #[Route('reservations/{uid}/confirm', name: 'confirm_reservation', methods: ['POST'])]
     /**
      * @OA\Response(
-     *     response=200,
-     *     description="Returns the list of reservations",
+     *     response=201,
+     *     description="Réservation effectuée avec succès",
      *     @OA\JsonContent(
      *        type="array",
      *        @OA\Items(ref=@Model(type=reservation::class, groups={"reservation"}))
      *     )
      * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Réservation non trouvée"
+     * )
+     * @OA\Response(
+     *     response=422,
+     *     description="Le contenu de l'objet reservation dans le body est invalide"
+     * )
+     * @OA\Response(
+     *     response=410,
+     *     description="La réservation est expirée"
+     * )
      * @OA\Tag(name="reservation")
      */
-    public function list(SerializerInterface $serializer, Request $request): Response
+    public function confirm(string $uid, SerializerInterface $serializer, Request $request): Response
     {
-        $reservations = $this->entityManager->getRepository(Reservation::class)->findAllReservations(
-            $request->query->get('page', 1),
-            $request->query->get('pageSize', 10)
-        );
+        $reservation = $this->entityManager->getRepository(Reservation::class)->find($uid);
 
-        return $this->apiResponse(
-            $serializer,
-            $reservations,
-            $request->getAcceptableContentTypes(),
-            '200',
-            ['reservation']
-        );
+        if (!$reservation) {
+            return $this->json(['message' => 'Réservation non trouvée'], 404);
+        }
+
+        if ($reservation->getStatus() !== Reservation::STATUS_OPEN) {
+            return $this->json(['message' => 'Le contenu de l\'objet reservation dans le body est invalide'], 422);
+        }
+
+        if ($reservation->getExpiresAt() < new \DateTimeImmutable('now')) {
+            return $this->json(['message' => 'La réservation est expirée'], 410);
+        }
+
+        try {
+            $reservation->setStatus(Reservation::STATUS_CONFIRMED);
+            $this->entityManager->persist($reservation);
+            $this->entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->json(['message' => 'Erreur interne'], 500);
+        }
+
+        return $this->json(['message' => 'Réservation effectuée avec succès'], 201);
+    }
+
+    #[Route('reservations/{uid}', name: 'get_reservation_details', methods: ['GET'])]
+    /**
+     * @OA\Response(
+     *     response=200,
+     *     description="La réservation est affché avec succès",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Reservation::class, groups={"reservation"}))
+     *     )
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="La réservation est inconnu"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Erreur interne"
+     * )
+     * @OA\Tag(name="reservation")
+     */
+    public function getReservationDetails(string $uid, SerializerInterface $serializer, Request $request): Response
+    {
+        try {
+            $reservation = $this->entityManager->getRepository(Reservation::class)->find($uid);
+
+            if (!$reservation) {
+                return $this->json(['message' => 'La réservation est inconnu'], 404);
+            }
+
+            return $this->apiResponse(
+                $serializer,
+                ['reservation' => $reservation],
+                $request->getAcceptableContentTypes()[0],
+                200,
+                ['reservation']
+            );
+        } catch (\Exception $e) {
+            return $this->json(['message' => 'Erreur interne'], 500);
+        }
+    }
+
+    // This route is for getting a list of all reservations
+    #[Route('movie/{movieUid}/reservations', name: 'get_movie_reservations', methods: ['GET'])]
+    /**
+     * @OA\Response(
+     *     response=200,
+     *     description="Les réservations sont affichés avec succès",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Reservation::class, groups={"reservation"}))
+     *     )
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Le film est inconnu"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Erreur interne"
+     * )
+     * @OA\Tag(name="reservation")
+     */
+    public function getMovieReservations(string $movieUid, SerializerInterface $serializer, Request $request): Response
+    {
+        try {
+            $response = $this->httpClient->request('GET', 'http://web:8000/api/movies/'.$movieUid);
+
+            if (404 === $response->getStatusCode()) {
+                return $this->json(['message' => 'Le film est inconnu'], 404);
+            }
+
+            $data = $response->toArray();
+            $movie = $data['movie'];
+            $movieUid = $movie['uid']; // Récupérez l'identifiant du film
+            $reservations = $this->entityManager->getRepository(Reservation::class)->findBy(['movieUid' => $movieUid, 'status' => Reservation::STATUS_OPEN]);
+
+            return $this->apiResponse(
+                $serializer,
+                $reservations,
+                $request->getAcceptableContentTypes(),
+                '200',
+                ['reservation']
+            );
+        } catch (\Exception|TransportExceptionInterface $e) {
+            dump($e);
+            return $this->json(['message' => 'Erreur interne'], 500);
+        }
     }
 
     // This route is for getting a specific reservation by ID
@@ -108,6 +228,8 @@ class ReservationController extends AbstractController
     public function add(UuidV4 $movieUid, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
         $req = (array) json_decode($request->getContent());
+        dump($request->getContent());
+        dump($this->entityManager->getRepository(Sceance::class)->find($req['sceance']));
         $sceance = $this->entityManager->getRepository(Sceance::class)->find($req['sceance']);
         $room = $this->entityManager->getRepository(Room::class)->find($req['room']);
 
