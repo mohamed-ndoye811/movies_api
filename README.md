@@ -73,7 +73,7 @@ Pour accéder à l'application, ouvrez votre navigateur et allez à `http://loca
 
 Comming soon...
 
-## Dociumentation API via Swagger
+## Documentation API via Swagger
 
 Pour accéder à la documentation de l'API, ouvrez votre navigateur et allez à `http://localhost:8000/api/doc`.
 

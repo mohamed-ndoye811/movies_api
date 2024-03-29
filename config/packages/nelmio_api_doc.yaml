@@ -1,11 +1,14 @@
 nelmio_api_doc:
     documentation:
+        servers:
+            - url: http://localhost:8001
+              description: Docker
         info:
-            title: Mon API FILM
-            description: Documentation de mon API de gestion de films.
+            title: Mon API de reservation
+            description: Documentation de mon API de reservation de séance de cinema.
             version: 1.0.0
     areas: # to filter documented areas
         path_patterns:
-            - ^/api
+            - ^/api/*
         disable_default_routes: true
             

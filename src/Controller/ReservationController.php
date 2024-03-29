@@ -47,7 +47,7 @@ class ReservationController extends AbstractController
     }
 
 
-    #[Route('reservations/{uid}/confirm', name: 'confirm_reservation', methods: ['POST'])]
+    #[Route('api/reservations/{uid}/confirm', name: 'confirm_reservation', methods: ['POST'])]
     /**
      * @OA\Response(
      *     response=201,
@@ -69,7 +69,7 @@ class ReservationController extends AbstractController
      *     response=410,
      *     description="La réservation est expirée"
      * )
-     * @OA\Tag(name="reservation")
+     * @OA\Tag(name="Reservation")
      */
     public function confirm(string $uid, SerializerInterface $serializer, Request $request): Response
     {
@@ -98,7 +98,7 @@ class ReservationController extends AbstractController
         return $this->json(['message' => 'Réservation effectuée avec succès'], 201);
     }
 
-    #[Route('reservations/{uid}', name: 'get_reservation_details', methods: ['GET'])]
+    #[Route('api/reservations/{uid}', name: 'get_reservation_details', methods: ['GET'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -116,7 +116,7 @@ class ReservationController extends AbstractController
      *     response=500,
      *     description="Erreur interne"
      * )
-     * @OA\Tag(name="reservation")
+     * @OA\Tag(name="Reservation")
      */
     public function getReservationDetails(string $uid, SerializerInterface $serializer, Request $request): Response
     {
@@ -140,7 +140,7 @@ class ReservationController extends AbstractController
     }
 
     // This route is for getting a list of all reservations
-    #[Route('movie/{movieUid}/reservations', name: 'get_movie_reservations', methods: ['GET'])]
+    #[Route('api/movie/{movieUid}/reservations', name: 'get_movie_reservations', methods: ['GET'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -158,7 +158,7 @@ class ReservationController extends AbstractController
      *     response=500,
      *     description="Erreur interne"
      * )
-     * @OA\Tag(name="reservation")
+     * @OA\Tag(name="Reservation")
      */
     public function getMovieReservations(string $movieUid, SerializerInterface $serializer, Request $request): Response
     {
@@ -188,7 +188,7 @@ class ReservationController extends AbstractController
     }
 
     // This route is for getting a specific reservation by ID
-    #[Route('reservation/{uid}', name: 'get_reservation', methods: ['GET'])]
+    #[Route('api/reservation/{uid}', name: 'get_reservation', methods: ['GET'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -213,7 +213,7 @@ class ReservationController extends AbstractController
     }
 
     // This route is for getting a list of all reservations
-    #[Route('movie/{movieUid}/reservations', name: 'create_reservation', methods: ['POST'])]
+    #[Route('api/movie/{movieUid}/reservations', name: 'create_reservation', methods: ['POST'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -223,7 +223,7 @@ class ReservationController extends AbstractController
      *        @OA\Items(ref=@Model(type=reservation::class, groups={"reservation"}))
      *     )
      * )
-     * @OA\Tag(name="reservation")
+     * @OA\Tag(name="Reservation")
      */
     public function add(UuidV4 $movieUid, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
@@ -290,7 +290,7 @@ class ReservationController extends AbstractController
     }
 
     // This route is for getting a list of all reservations
-    #[Route('reservation/{uid}', name: 'edit_reservation', methods: ['PUT'])]
+    #[Route('api/reservation/{uid}', name: 'edit_reservation', methods: ['PUT'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -300,7 +300,7 @@ class ReservationController extends AbstractController
      *        @OA\Items(ref=@Model(type=reservation::class, groups={"reservation"}))
      *     )
      * )
-     * @OA\Tag(name="reservation")
+     * @OA\Tag(name="Reservation")
      */
     public function edit(Reservation $reservation, Nserializer $nserializer, ValidatorInterface $validator, SerializerInterface $serializer, Request $request): Response
     {
@@ -339,7 +339,7 @@ class ReservationController extends AbstractController
 
 
     // This route is for deleting an existing reservation by ID
-    #[Route('reservation/{uid}', name: 'delete_reservation', methods: ['DELETE'])]
+    #[Route('api/reservation/{uid}', name: 'delete_reservation', methods: ['DELETE'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -350,7 +350,7 @@ class ReservationController extends AbstractController
      *     response=404,
      *     description="Le reservation est inconnu"
      * )
-     * @OA\Tag(name="reservation")
+     * @OA\Tag(name="Reservation")
      */
     public function delete(string $uid, SerializerInterface $serializer, Request $request): Response
     {

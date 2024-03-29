@@ -41,8 +41,9 @@ class SceanceController extends AbstractController
     }
 
     // This route is for getting a list of all sceances
-    #[Route('cinema/{cinemaUid}/rooms/{roomUid}/sceances', name: 'sceance_listing', methods: ['GET'])]
+    #[Route('api/cinema/{cinemaUid}/rooms/{roomUid}/sceances', name: 'sceance_listing', methods: ['GET'])]
     /**
+     * @Route("cinema/{cinemaUid}/rooms/{roomUid}/sceances", name="sceance_listing", methods={"GET"})
      * @OA\Response(
      *     response=200,
      *     description="Returns the list of sceances",
@@ -51,7 +52,7 @@ class SceanceController extends AbstractController
      *        @OA\Items(ref=@Model(type=sceance::class, groups={"sceance"}))
      *     )
      * )
-     * @OA\Tag(name="sceance")
+     * @OA\Tag(name="Sceance")
      */
     public function list(UuidV4 $cinemaUid, UuidV4 $roomUid, SerializerInterface $serializer, Request $request): Response
     {
@@ -85,7 +86,7 @@ class SceanceController extends AbstractController
     }
 
     // This route is for getting a specific sceance by ID
-    #[Route('cinema/{cinemaUid}/rooms/{roomUid}/sceances/{uid}', name: 'get_sceance', methods: ['GET'])]
+    #[Route('api/cinema/{cinemaUid}/rooms/{roomUid}/sceances/{uid}', name: 'get_sceance', methods: ['GET'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -119,7 +120,7 @@ class SceanceController extends AbstractController
     }
 
     // This route is for getting a list of all sceances
-    #[Route('/cinema/{cinemaUid}/rooms/{roomUid}/sceances', name: 'create_sceance', methods: ['POST'])]
+    #[Route('api//cinema/{cinemaUid}/rooms/{roomUid}/sceances', name: 'create_sceance', methods: ['POST'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -129,7 +130,7 @@ class SceanceController extends AbstractController
      *        @OA\Items(ref=@Model(type=sceance::class, groups={"sceance"}))
      *     )
      * )
-     * @OA\Tag(name="sceance")
+     * @OA\Tag(name="Sceance")
      */
     public function add(UuidV4 $cinemaUid, UuidV4 $roomUid, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
@@ -185,7 +186,7 @@ class SceanceController extends AbstractController
     }
 
     // This route is for getting a list of all sceances
-    #[Route('cinema/{cinemaUid}/rooms/{roomUid}/sceances/{uid}', name: 'edit_sceance', methods: ['PUT'])]
+    #[Route('api/cinema/{cinemaUid}/rooms/{roomUid}/sceances/{uid}', name: 'edit_sceance', methods: ['PUT'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -195,7 +196,7 @@ class SceanceController extends AbstractController
      *        @OA\Items(ref=@Model(type=sceance::class, groups={"sceance"}))
      *     )
      * )
-     * @OA\Tag(name="sceance")
+     * @OA\Tag(name="Sceance")
      */
     public function edit(UuidV4 $cinemaUid, UuidV4 $roomUid, UuidV4 $uid, SerializerInterface $serializer, Nserializer $nserializer, Request $request, ValidatorInterface $validator): Response
     {
@@ -252,7 +253,7 @@ class SceanceController extends AbstractController
 
 
     // This route is for deleting an existing sceance by ID
-    #[Route('cinema/{cinemaUid}/rooms/{roomUid}/sceances/{uid}', name: 'delete_sceance', methods: ['DELETE'])]
+    #[Route('api/cinema/{cinemaUid}/rooms/{roomUid}/sceances/{uid}', name: 'delete_sceance', methods: ['DELETE'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -263,7 +264,7 @@ class SceanceController extends AbstractController
      *     response=404,
      *     description="Le sceance est inconnu"
      * )
-     * @OA\Tag(name="sceance")
+     * @OA\Tag(name="Sceance")
      */
     public function delete(UuidV4 $cinemaUid, UuidV4 $roomUid, UuidV4 $uid, SerializerInterface $serializer, Request $request): Response
     {

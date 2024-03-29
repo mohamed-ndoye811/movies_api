@@ -35,7 +35,7 @@ class RoomController extends AbstractController
     }
 
     // This route is for getting a list of all rooms
-    #[Route('cinema/{cinemaUid}/rooms', name: 'room_listing', methods: ['GET'])]
+    #[Route('api/cinema/{cinemaUid}/rooms', name: 'room_listing', methods: ['GET'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -45,7 +45,7 @@ class RoomController extends AbstractController
      *        @OA\Items(ref=@Model(type=room::class, groups={"room"}))
      *     )
      * )
-     * @OA\Tag(name="room")
+     * @OA\Tag(name="Room")
      */
     public function list(UuidV4 $cinemaUid, SerializerInterface $serializer, Request $request): Response
     {
@@ -65,7 +65,7 @@ class RoomController extends AbstractController
     }
 
     // This route is for getting a specific room by ID
-    #[Route('cinema/{cinemaUid}/rooms/{uid}', name: 'get_room', methods: ['GET'])]
+    #[Route('api/cinema/{cinemaUid}/rooms/{uid}', name: 'get_room', methods: ['GET'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -90,7 +90,7 @@ class RoomController extends AbstractController
     }
 
     // This route is for getting a list of all rooms
-    #[Route('cinema/{cinemaUid}/rooms', name: 'create_room', methods: ['POST'])]
+    #[Route('api/cinema/{cinemaUid}/rooms', name: 'create_room', methods: ['POST'])]
     /**
      * @OA\Response(
      *     response=201,
@@ -100,7 +100,7 @@ class RoomController extends AbstractController
      *        @OA\Items(ref=@Model(type=room::class, groups={"room"}))
      *     )
      * )
-     * @OA\Tag(name="room")
+     * @OA\Tag(name="Room")
      */
     public function add(UuidV4 $cinemaUid, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
@@ -139,7 +139,7 @@ class RoomController extends AbstractController
     }
 
     // This route is for getting a list of all rooms
-    #[Route('cinema/{cinemaUid}/rooms/{uid}', name: 'edit_room', methods: ['PUT'])]
+    #[Route('api/cinema/{cinemaUid}/rooms/{uid}', name: 'edit_room', methods: ['PUT'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -149,7 +149,7 @@ class RoomController extends AbstractController
      *        @OA\Items(ref=@Model(type=room::class, groups={"room"}))
      *     )
      * )
-     * @OA\Tag(name="room")
+     * @OA\Tag(name="Room")
      */
     public function edit(UuidV4 $cinemaUid, UuidV4 $uid, SerializerInterface $serializer, Nserializer $nserializer, Request $request, ValidatorInterface $validator): Response
     {
@@ -200,7 +200,7 @@ class RoomController extends AbstractController
 
 
     // This route is for deleting an existing room by ID
-    #[Route('/cinema/{cinemaUid}/rooms/{uid}', name: 'delete_room', methods: ['DELETE'])]
+    #[Route('api//cinema/{cinemaUid}/rooms/{uid}', name: 'delete_room', methods: ['DELETE'])]
     /**
      * @OA\Response(
      *     response=204,
@@ -211,7 +211,7 @@ class RoomController extends AbstractController
      *     response=404,
      *     description="LLa salle n'a pas été trouvée"
      * )
-     * @OA\Tag(name="room")
+     * @OA\Tag(name="Room")
      */
     public function delete(UuidV4 $cinemaUid, UuidV4 $uid, SerializerInterface $serializer, Request $request): Response
     {

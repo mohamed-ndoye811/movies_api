@@ -37,7 +37,7 @@ class CinemaController extends AbstractController
     }
 
     // This route is for getting a list of all cinemas
-    #[Route('cinema', name: 'cinema_listing', methods: ['GET'])]
+    #[Route('api/cinema', name: 'cinema_listing', methods: ['GET'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -47,7 +47,7 @@ class CinemaController extends AbstractController
      *        @OA\Items(ref=@Model(type=cinema::class, groups={"cinema"}))
      *     )
      * )
-     * @OA\Tag(name="cinema")
+     * @OA\Tag(name="Cinema")
      */
     public function list(SerializerInterface $serializer, Request $request, MessageBusInterface $bus): Response
     {
@@ -71,7 +71,7 @@ class CinemaController extends AbstractController
     }
 
     // This route is for getting a specific cinema by ID
-    #[Route('cinema/{uid}', name: 'get_cinema', methods: ['GET'])]
+    #[Route('api/cinema/{uid}', name: 'get_cinema', methods: ['GET'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -96,7 +96,7 @@ class CinemaController extends AbstractController
     }
 
     // This route is for getting a list of all cinemas
-    #[Route('cinema', name: 'create_cinema', methods: ['POST'])]
+    #[Route('api/cinema', name: 'create_cinema', methods: ['POST'])]
     /**
      * @OA\Response(
      *     response=201,
@@ -106,7 +106,7 @@ class CinemaController extends AbstractController
      *        @OA\Items(ref=@Model(type=cinema::class, groups={"cinema"}))
      *     )
      * )
-     * @OA\Tag(name="cinema")
+     * @OA\Tag(name="Cinema")
      */
     public function add(SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
@@ -141,7 +141,7 @@ class CinemaController extends AbstractController
     }
 
     // This route is for getting a list of all cinemas
-    #[Route('cinema/{uid}', name: 'edit_cinema', methods: ['PUT'])]
+    #[Route('api/cinema/{uid}', name: 'edit_cinema', methods: ['PUT'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -151,7 +151,7 @@ class CinemaController extends AbstractController
      *        @OA\Items(ref=@Model(type=cinema::class, groups={"cinema"}))
      *     )
      * )
-     * @OA\Tag(name="cinema")
+     * @OA\Tag(name="Cinema")
      */
     public function edit(SerializerInterface $serializer, Nserializer $nserializer, Cinema $cinema, Request $request, ValidatorInterface $validator): Response
     {
@@ -191,7 +191,7 @@ class CinemaController extends AbstractController
 
 
     // This route is for deleting an existing cinema by ID
-    #[Route('cinema/{uid}', name: 'delete_cinema', methods: ['DELETE'])]
+    #[Route('api/cinema/{uid}', name: 'delete_cinema', methods: ['DELETE'])]
     /**
      * @OA\Response(
      *     response=200,
@@ -202,7 +202,7 @@ class CinemaController extends AbstractController
      *     response=404,
      *     description="Le cinema est inconnu"
      * )
-     * @OA\Tag(name="cinema")
+     * @OA\Tag(name="Cinema")
      */
     public function delete(string $uid, SerializerInterface $serializer, Request $request): Response
     {
